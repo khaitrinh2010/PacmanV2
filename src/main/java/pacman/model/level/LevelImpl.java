@@ -10,12 +10,14 @@ import pacman.model.entity.dynamic.ghost.Ghost;
 import pacman.model.entity.dynamic.ghost.GhostMode;
 import pacman.model.entity.dynamic.ghost.Inky;
 import pacman.model.entity.dynamic.ghost.state.FrightenedState;
+import pacman.model.entity.dynamic.ghost.state.GhostState;
 import pacman.model.entity.dynamic.ghost.state.RegularState;
 import pacman.model.entity.dynamic.ghost.strategy.InkyStrategy;
-import pacman.model.entity.dynamic.ghost.strategy.Strategy;
 import pacman.model.entity.dynamic.physics.PhysicsEngine;
 import pacman.model.entity.dynamic.player.Controllable;
 import pacman.model.entity.dynamic.player.Pacman;
+import pacman.model.entity.dynamic.player.decorator.ConcretePacmanDecorator;
+import pacman.model.entity.dynamic.player.decorator.PacmanDecorator;
 import pacman.model.entity.staticentity.StaticEntity;
 import pacman.model.entity.staticentity.collectable.Collectable;
 import pacman.model.entity.staticentity.collectable.SuperPellet;
@@ -46,6 +48,8 @@ public class LevelImpl implements Level {
     private GameState gameState;
     private List<Renderable> collectables;
     private GhostMode currentGhostMode;
+
+    private int ghostEatenStreak = 0;
 
     public LevelImpl(JSONObject levelConfiguration,
                      Maze maze) {
@@ -131,23 +135,21 @@ public class LevelImpl implements Level {
             }
 
         } else {
-
             if (tickCount == modeLengths.get(currentGhostMode)) {
-
+                if (currentGhostMode == GhostMode.FRIGHTENED) {
+                    removeEffectFromPacman();
+                    ghostEatenStreak = 0;
+                }
                 // update ghost mode
                 this.currentGhostMode = GhostMode.getNextGhostMode(currentGhostMode);
                 for (Ghost ghost : this.ghosts) {
                     ghost.setGhostMode(this.currentGhostMode);
                 }
-
                 tickCount = 0;
             }
-
             if (tickCount % Pacman.PACMAN_IMAGE_SWAP_TICK_COUNT == 0) {
                 this.player.switchImage();
             }
-
-            // Update the dynamic entities
             List<DynamicEntity> dynamicEntities = getDynamicEntities();
 
             for (DynamicEntity dynamicEntity : dynamicEntities) {
@@ -178,8 +180,20 @@ public class LevelImpl implements Level {
                 }
             }
         }
-
         tickCount++;
+    }
+    private void addEffectToPacman(){
+        Controllable pacmanDecorator = new ConcretePacmanDecorator(player);
+        renderables.remove(player);
+        player = pacmanDecorator;
+        renderables.add(player);
+    }
+
+    private void removeEffectFromPacman(){
+        Controllable originalPacman = ((ConcretePacmanDecorator) player).getPacman();
+        renderables.remove(player);
+        player = originalPacman;
+        renderables.add(player);
     }
 
     @Override
@@ -195,10 +209,19 @@ public class LevelImpl implements Level {
     @Override
     public void collect(Collectable collectable) {
         if (collectable instanceof SuperPellet){
+            this.currentGhostMode = GhostMode.FRIGHTENED;
             for (Ghost ghost : ghosts){
-                RegularState regularState = (RegularState) ghost.getRegularState();
-                regularState.transist();
+                GhostState ghostCurrentState = ghost.getCurrentGhostState();
+                if (ghostCurrentState instanceof RegularState) {
+                    ghostCurrentState.resetCurrentStateAndTransist();
+                }
+                else {
+                    ((FrightenedState) ghostCurrentState).resetTickCount();
+                }
             }
+            ghostEatenStreak = 0;
+            tickCount = 0;
+            addEffectToPacman();
         }
         this.points += collectable.getPoints();
         notifyObserversWithScoreChange(collectable.getPoints());
@@ -210,6 +233,10 @@ public class LevelImpl implements Level {
         if (gameState == GameState.IN_PROGRESS) {
             for (DynamicEntity dynamicEntity : getDynamicEntities()) {
                 dynamicEntity.reset();
+            }
+            for (Ghost ghost: ghosts){
+                ghost.setGhostMode(GhostMode.SCATTER);
+                ghost.setState(ghost.getRegularState());
             }
             setNumLives(numLives - 1);
             setGameState(GameState.READY);
@@ -300,5 +327,21 @@ public class LevelImpl implements Level {
     @Override
     public void handleGameEnd() {
         this.renderables.removeAll(getDynamicEntities());
+    }
+
+    @Override
+    public int getStreakCount() {
+        return ghostEatenStreak;
+    }
+
+    @Override
+    public void incrementScore(int scoreIncremented) {
+        this.points += scoreIncremented;
+        notifyObserversWithScoreChange(scoreIncremented);
+    }
+    @Override
+    public void incrementGhostStreak(){
+        if (ghostEatenStreak == ghosts.size()) ghostEatenStreak = 0;
+        this.ghostEatenStreak += 1;
     }
 }

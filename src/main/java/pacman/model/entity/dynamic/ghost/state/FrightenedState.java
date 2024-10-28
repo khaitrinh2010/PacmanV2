@@ -7,21 +7,23 @@ import pacman.model.entity.dynamic.ghost.GhostMode;
 import pacman.model.entity.dynamic.physics.Direction;
 import pacman.model.entity.dynamic.physics.KinematicState;
 import pacman.model.entity.dynamic.physics.Vector2D;
+import pacman.model.level.Level;
 import pacman.model.maze.Maze;
 
 import java.util.*;
 
+import static java.lang.Math.pow;
 import static pacman.model.entity.dynamic.ghost.GhostImpl.minimumDirectionCount;
 
 
 public class FrightenedState implements GhostState{
     private final Ghost ghost;
 
-    private static FrightenedState instance;
-
     private static double DURATION = 0;
 
     private double duration;
+
+    private static final int SCALING_POINT = 100;
 
     private final Image frightenedImage =  new Image("maze/ghosts/frightened.png");
     public FrightenedState(Ghost ghost){
@@ -32,21 +34,37 @@ public class FrightenedState implements GhostState{
         return frightenedImage;
     }
     @Override
-    public void handleCollide(Renderable entity) {
-
+    public void handleCollide(Level level, Renderable entity) {
+        if (level.isPlayer(entity)) {
+            ghost.reset();
+            resetCurrentStateAndTransist();
+            ghost.setFreezeCount(34);
+            this.duration = DURATION;
+            level.incrementGhostStreak();
+            int streak = level.getStreakCount();
+            int base = (int) pow(2, streak);
+            System.out.println("Score: " + base * SCALING_POINT);
+            level.incrementScore(base * SCALING_POINT);
+        }
     }
     @Override
     public void update() {
         if (this.duration <= 0){
-            this.duration = DURATION;
-            ghost.setState(ghost.getRegularState());
-            ghost.setGhostMode(GhostMode.SCATTER);
+            resetCurrentStateAndTransist();
             return;
         }
         this.updateDirection();
         ghost.getKinematicState().update();
         ghost.getBoundingBox().setTopLeft(ghost.getKinematicState().getPosition());
         this.duration -= 1;
+    }
+
+    @Override
+    public void resetCurrentStateAndTransist() {
+        this.duration = DURATION;
+        ghost.setGhostMode(GhostMode.SCATTER);
+        ghost.setState(ghost.getRegularState());
+
     }
 
     public void setDuration(double duration) {
@@ -75,6 +93,10 @@ public class FrightenedState implements GhostState{
             case UP -> kinematicState.up();
             case DOWN -> kinematicState.down();
         }
+    }
+
+    public void resetTickCount(){
+        this.duration = DURATION;
     }
 
     private Direction selectDirection(Set<Direction> possibleDirections) {

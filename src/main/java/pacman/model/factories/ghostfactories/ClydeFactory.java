@@ -8,6 +8,9 @@ import pacman.model.entity.dynamic.physics.KinematicState;
 import pacman.model.entity.dynamic.physics.Vector2D;
 import pacman.model.factories.GhostFactory;
 
+/**
+ * Factory class for creating Clyde ghost
+ */
 public class ClydeFactory extends GhostFactory {
     public ClydeFactory() {
         GHOST_IMAGE = CLYDE_IMAGE;

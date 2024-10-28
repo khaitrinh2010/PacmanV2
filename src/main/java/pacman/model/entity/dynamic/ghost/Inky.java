@@ -7,10 +7,13 @@ import pacman.model.entity.dynamic.physics.BoundingBox;
 import pacman.model.entity.dynamic.physics.KinematicState;
 import pacman.model.entity.dynamic.physics.Vector2D;
 
+/**
+ * Concrete class for Inky ghost
+ */
 public class Inky extends GhostImpl{
     public Inky(Image image, BoundingBox boundingBox, KinematicState kinematicState, GhostMode ghostMode, Vector2D targetCorner) {
         super(image, boundingBox, kinematicState, ghostMode, targetCorner);
-        strategy = new InkyStrategy(this);
+        strategy = new InkyStrategy();
     }
 
     public Strategy getStrategy() {

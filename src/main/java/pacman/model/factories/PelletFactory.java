@@ -13,7 +13,7 @@ import pacman.model.entity.staticentity.collectable.Pellet;
  */
 public class PelletFactory implements RenderableFactory {
     protected Image PELLET_IMAGE = new Image("maze/pellet.png");
-    protected static final int NUM_POINTS = 100;
+    protected int NUM_POINTS = 10;
     protected final Renderable.Layer layer = Renderable.Layer.BACKGROUND;
 
     @Override

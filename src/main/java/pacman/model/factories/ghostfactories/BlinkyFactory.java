@@ -10,6 +10,9 @@ import pacman.model.factories.GhostFactory;
 
 import java.awt.*;
 
+/**
+ * Factory class for creating Blinky ghost
+ */
 public class BlinkyFactory extends GhostFactory {
     public BlinkyFactory() {
         GHOST_IMAGE = BLINKY_IMAGE;

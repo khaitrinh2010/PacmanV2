@@ -7,28 +7,36 @@ import pacman.model.entity.dynamic.physics.Vector2D;
 import pacman.model.maze.MazeCreator;
 
 public class PinkyStrategy implements Strategy {
-    private Ghost ghost;
-    public PinkyStrategy(Ghost ghost) {
-        this.ghost = ghost;
-    }
 
+    /**
+     * 4 grid spaces ahead of Pacman in the direction it is facing
+     */
+    private final int THRESHOLD = 4;
+
+    /**
+     * Chase target for Pinky
+     * @param pacmanPosition, position of pacman
+     * @param pacmanKinematicState, kinematic state of pacman
+     * @param ghost, the ghost (Pinky)
+     * @return the target position based on the strategy
+     */
     @Override
-    public Vector2D chaseTarget(Vector2D pacmanPosition, KinematicState pacmanKinematicState) {
+    public Vector2D chaseTarget(Vector2D pacmanPosition, KinematicState pacmanKinematicState, Ghost ghost) {
         int xTilePacman = (int) Math.floor(pacmanPosition.getX() / MazeCreator.RESIZING_FACTOR);
         int yTilePacman = (int) Math.floor(pacmanPosition.getY() / MazeCreator.RESIZING_FACTOR);
         Direction direction = pacmanKinematicState.getDirection();
         switch (direction) {
             case UP:
-                yTilePacman -= 4;
+                yTilePacman -= THRESHOLD;
                 break;
             case DOWN:
-                yTilePacman += 4;
+                yTilePacman += THRESHOLD;
                 break;
             case LEFT:
-                xTilePacman -= 4;
+                xTilePacman -= THRESHOLD;
                 break;
             case RIGHT:
-                xTilePacman += 4;
+                xTilePacman += THRESHOLD;
                 break;
         }
         xTilePacman = Math.max(1, Math.min(26, xTilePacman));

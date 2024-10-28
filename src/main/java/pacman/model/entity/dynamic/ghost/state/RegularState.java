@@ -8,6 +8,7 @@ import pacman.model.entity.dynamic.physics.Direction;
 import pacman.model.entity.dynamic.physics.KinematicState;
 import pacman.model.entity.dynamic.physics.Vector2D;
 import pacman.model.entity.dynamic.player.Pacman;
+import pacman.model.level.Level;
 import pacman.model.maze.Maze;
 
 import java.util.Collections;
@@ -24,17 +25,15 @@ public class RegularState implements GhostState {
     public RegularState(Ghost ghost){
         this.ghost = ghost;
     }
-
-
     @Override
     public Image getImage() {
         return ghost.getImage();
     }
 
     @Override
-    public void handleCollide(Renderable entity) {
-        if (entity instanceof Pacman){
-            ghost.reset();
+    public void handleCollide(Level level, Renderable entity) {
+        if (level.isPlayer(entity)) {
+            level.handleLoseLife();
         }
     }
 
@@ -45,7 +44,8 @@ public class RegularState implements GhostState {
         ghost.getBoundingBox().setTopLeft(ghost.getKinematicState().getPosition());
     }
 
-    public void transist(){
+    @Override
+    public void resetCurrentStateAndTransist(){
         ghost.setState(ghost.getFrightenedState());
         ghost.setGhostMode(GhostMode.FRIGHTENED);
     }

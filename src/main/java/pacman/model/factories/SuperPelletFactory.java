@@ -6,9 +6,13 @@ import pacman.model.entity.dynamic.physics.BoundingBoxImpl;
 import pacman.model.entity.dynamic.physics.Vector2D;
 import pacman.model.entity.staticentity.collectable.SuperPellet;
 
+/**
+ * Concrete renderable factory for SuperPellet objects
+ */
 public class SuperPelletFactory extends PelletFactory {
     public SuperPelletFactory() {
-        PELLET_IMAGE = doubleImageSize(PELLET_IMAGE);
+        NUM_POINTS = 50;
+        PELLET_IMAGE = doubleImageSize(PELLET_IMAGE); // Double the size of the image
     }
     @Override
     public Renderable createRenderable(Vector2D position) {
@@ -24,6 +28,12 @@ public class SuperPelletFactory extends PelletFactory {
                 NUM_POINTS
         );
     }
+
+    /**
+     * Doubles the size of the image
+     * @param image, the image to double
+     * @return the doubled image
+     */
     private Image doubleImageSize(Image image) {
         return new Image(image.getUrl(), image.getWidth() * 2, image.getHeight() * 2, true, true);
     }

@@ -8,6 +8,9 @@ import pacman.model.entity.dynamic.physics.KinematicState;
 import pacman.model.entity.dynamic.physics.Vector2D;
 import pacman.model.factories.GhostFactory;
 
+/**
+ * Factory class for creating Pinky ghost
+ */
 public class PinkyFactory extends GhostFactory {
     public PinkyFactory() {
         GHOST_IMAGE = PINKY_IMAGE;

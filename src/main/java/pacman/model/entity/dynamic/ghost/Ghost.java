@@ -42,27 +42,75 @@ public interface Ghost extends DynamicEntity, PlayerPositionObserver {
      */
     GhostState getCurrentGhostState();
 
-    void setCurrentGhostState(GhostState state);
-
+    /**
+     * Gets the frightened state of the Ghost
+     * @return the frightened state of the Ghost
+     */
     GhostState getFrightenedState();
 
+    /**
+     * Gets the regular state of the Ghost
+     * @return regular state of the Ghost
+     */
     GhostState getRegularState();
 
+    /**
+     * set the current state of the Ghost
+     * @param state, the state of the Ghost
+     */
     void setState(GhostState state);
 
+    /**
+     * Get the target location of the Ghost
+     * @return position of the target location
+     */
     Vector2D getTargetLocation();
 
+    /**
+     * Set the target location of the Ghost
+     * @param targetLocation, the target location of the Ghost
+     */
     void setTargetLocation(Vector2D targetLocation);
 
+    /**
+     * get all possible directions the Ghost can move
+     * @return all possible directions the Ghost can move
+     */
     Set<Direction> getPossibleDirections();
 
+    /**
+     * direction the Ghost is currently moving
+     * @return direction the Ghost is currently moving
+     */
     Direction getCurrentDirection();
 
+    /**
+     * set the direction count of the Ghost
+     * @param currentDirectionCount, the current direction count
+     */
     void setCurrentDirectionCount(int currentDirectionCount);
 
+    /**
+     * get the current direction count of the Ghost
+     * @return the current direction count of the Ghost
+     */
     int getCurrentDirectionCount();
 
+    /**
+     * set the current direction of the Ghost
+     * @param currentDirection, the current direction of the Ghost
+     */
     void setCurrentDirection(Direction currentDirection);
 
+    /**
+     * get the kinematic state of the Ghost
+     * @return the kinematic state of the Ghost
+     */
     KinematicState getKinematicState();
+
+    /**
+     * set duration that ghost will be freeze
+     * @param freezeCount, the duration
+     */
+    void setFreezeCount(int freezeCount);
 }

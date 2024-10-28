@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * The base interface for a Pac-Man level.
  */
-public interface Level extends LevelStateSubject {
+public interface Level extends LevelStateSubject, FrightenedModeHandler {
     /**
      * Return a list of the currently existing Renderables
      *

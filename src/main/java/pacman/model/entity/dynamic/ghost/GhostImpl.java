@@ -30,6 +30,7 @@ public class GhostImpl implements Ghost {
     private Set<Direction> possibleDirections;
     private Map<GhostMode, Double> speeds;
     private int currentDirectionCount = 0;
+    private int freezeCount = 0;
 
     protected Strategy strategy;
 
@@ -69,7 +70,15 @@ public class GhostImpl implements Ghost {
 
     @Override
     public void update() {
+        if (freezeCount > 0) {
+            freezeCount--;
+            return;
+        }
         currentGhostState.update();
+    }
+    @Override
+    public void setFreezeCount(int duration){
+        freezeCount =  duration;
     }
 
     public Vector2D getTargetLocation() {
@@ -101,14 +110,12 @@ public class GhostImpl implements Ghost {
 
     @Override
     public void collideWith(Level level, Renderable renderable) {
-        if (level.isPlayer(renderable)) {
-            level.handleLoseLife();
-        }
+        currentGhostState.handleCollide(level, renderable);
     }
 
     @Override
     public void update(Vector2D pacmanPosition, KinematicState pacmanKinematicState) {
-        playerPosition = this.strategy.chaseTarget(pacmanPosition, pacmanKinematicState);
+        playerPosition = this.strategy.chaseTarget(pacmanPosition, pacmanKinematicState, this);
     }
 
     @Override
@@ -181,12 +188,6 @@ public class GhostImpl implements Ghost {
     public GhostState getCurrentGhostState() {
         return currentGhostState;
     }
-
-    @Override
-    public void setCurrentGhostState(GhostState state) {
-        currentGhostState = state;
-    }
-
     @Override
     public GhostState getFrightenedState() {
         return frightenedState;

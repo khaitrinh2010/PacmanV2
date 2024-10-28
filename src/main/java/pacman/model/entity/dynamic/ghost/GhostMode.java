@@ -11,12 +11,16 @@ public enum GhostMode {
 
 
     /**
-     * Ghosts alternate between SCATTER and CHASE mode normally
+     * Ghosts alternate between SCATTER, CHASE, and FRIGHTENED modes
      *
      * @param ghostMode current ghost mode
      * @return next ghost mode
      */
     public static GhostMode getNextGhostMode(GhostMode ghostMode) {
-        return ghostMode == SCATTER ? CHASE : SCATTER;
+        return switch (ghostMode) {
+            case SCATTER -> CHASE;
+            case CHASE -> SCATTER;
+            case FRIGHTENED -> SCATTER;
+        };
     }
 }

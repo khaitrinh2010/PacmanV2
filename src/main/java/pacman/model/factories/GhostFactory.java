@@ -32,11 +32,7 @@ public class GhostFactory implements RenderableFactory {
             new Vector2D(RIGHT_X_POSITION_OF_MAP, BOTTOM_Y_POSITION_OF_MAP)
     );
 
-    protected Vector2D targetCorner;
-
-    protected int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
+    protected Vector2D targetCorner; // The corner of the map that the ghost is targeting
 
     @Override
     public Renderable createRenderable(
