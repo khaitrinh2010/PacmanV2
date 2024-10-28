@@ -7,6 +7,10 @@ import pacman.model.level.Level;
 
 
 public interface GhostState {
+    /**
+     * Get the image for the ghost in the corresponding state
+     * @return the image for the ghost
+     */
     Image getImage();
 
     /**
@@ -21,5 +25,8 @@ public interface GhostState {
      */
     void update();
 
+    /**
+     * Reset the current state and transist to the next state
+     */
     void resetCurrentStateAndTransist();
 }

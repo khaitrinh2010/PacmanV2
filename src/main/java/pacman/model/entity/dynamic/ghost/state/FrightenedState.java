@@ -15,14 +15,14 @@ import java.util.*;
 import static java.lang.Math.pow;
 import static pacman.model.entity.dynamic.ghost.GhostImpl.minimumDirectionCount;
 
+/**
+ * Concrete class for FrightenedState
+ */
 
 public class FrightenedState implements GhostState{
     private final Ghost ghost;
-
     private static double DURATION = 0;
-
     private double duration;
-
     private static final int SCALING_POINT = 100;
 
     private final Image frightenedImage =  new Image("maze/ghosts/frightened.png");
@@ -67,11 +67,18 @@ public class FrightenedState implements GhostState{
 
     }
 
+    /**
+     * Set the duration of the frightened state
+     * @param duration, the duration of the frightened state
+     */
     public void setDuration(double duration) {
         this.duration = duration;
         DURATION = duration;
     }
 
+    /**
+     * Update the direction of the ghost, in frightened mode, ghost will randomly select the direction
+     */
     private void updateDirection() {
         // Ghosts update their target location when they reach an intersection
         if (Maze.isAtIntersection(ghost.getPossibleDirections())) {
@@ -95,10 +102,18 @@ public class FrightenedState implements GhostState{
         }
     }
 
+    /**
+     * Reset the tick count for the frightened state if pacman eats a power pellet
+     */
     public void resetTickCount(){
         this.duration = DURATION;
     }
 
+    /**
+     * Select the direction for the ghost to travel in
+     * @param possibleDirections, the possible directions the ghost can travel in
+     * @return the direction for the ghost to travel in
+     */
     private Direction selectDirection(Set<Direction> possibleDirections) {
         if (possibleDirections.isEmpty()) {
             return ghost.getCurrentDirection();

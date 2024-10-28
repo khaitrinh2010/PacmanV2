@@ -36,20 +36,21 @@ public class RegularState implements GhostState {
             level.handleLoseLife();
         }
     }
-
     @Override
     public void update() {
         this.updateDirection();
         ghost.getKinematicState().update();
         ghost.getBoundingBox().setTopLeft(ghost.getKinematicState().getPosition());
     }
-
     @Override
     public void resetCurrentStateAndTransist(){
         ghost.setState(ghost.getFrightenedState());
         ghost.setGhostMode(GhostMode.FRIGHTENED);
     }
 
+    /**
+     * Update the direction for corresponding state, in regular state, ghost will behave default
+     */
     private void updateDirection() {
         // Ghosts update their target location when they reach an intersection
         if (Maze.isAtIntersection(ghost.getPossibleDirections())) {
@@ -73,6 +74,11 @@ public class RegularState implements GhostState {
         }
     }
 
+    /**
+     * Select the direction for the ghost to move in
+     * @param possibleDirections, all possible directions for the ghost to move in
+     * @return a direction for the ghost to move in
+     */
     private Direction selectDirection(Set<Direction> possibleDirections) {
         if (possibleDirections.isEmpty()) {
             return ghost.getCurrentDirection();
